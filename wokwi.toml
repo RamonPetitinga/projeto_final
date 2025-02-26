@@ -1,4 +1,4 @@
 [wokwi]
 version = 1
-firmware = 'build/confre_digital.uf2'
-elf = 'build/confre_digital.elf'
+firmware = 'build/cofre_digital.uf2'
+elf = 'build/cofre_digital.elf'

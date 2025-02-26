@@ -4,8 +4,11 @@
 #include "hardware/adc.h"
 #include "hardware/i2c.h"
 #include "hardware/pwm.h"
+#include "hardware/pio.h"
+#include "hardware/clocks.h"
 #include "lib/ssd1306.h"
 #include "pico/bootrom.h"
+#include "lib/ws2812.pio.h" // Arquivo gerado pelo PIO
 
 #define I2C_PORT i2c1
 #define I2C_SDA 14
@@ -24,6 +27,10 @@
 
 #define SENHA_CORRETA "1234"
 #define TENTATIVAS_MAX 3
+
+// Configurações da matriz de LEDs WS2812
+#define LED_PIN 7    // Pino de controle dos LEDs WS2812
+#define LED_COUNT 25 // 5x5 = 25 LEDs
 
 // Variáveis globais
 ssd1306_t ssd;
@@ -96,6 +103,26 @@ void desenhar_teclado()
     }
 
     ssd1306_send_data(&ssd); // Envia os dados para o display
+}
+
+// Função para definir a cor de todos os LEDs da matriz com 50% de intensidade
+void set_led_matrix_color(uint32_t color)
+{
+    // Aplica 50% de intensidade a cada canal de cor
+    uint8_t red = (color >> 16) & 0xFF;  // Extrai o canal vermelho
+    uint8_t green = (color >> 8) & 0xFF; // Extrai o canal verde
+
+    red = red / 2;     // 50% de intensidade para o vermelho
+    green = green / 2; // 50% de intensidade para o verde
+
+    // Converte a cor para o formato GRB
+    uint32_t grb_color = (green << 16) | (red << 8);
+
+    // Envia a cor para todos os LEDs
+    for (int i = 0; i < LED_COUNT; i++)
+    {
+        pio_sm_put_blocking(pio0, 0, grb_color << 8u);
+    }
 }
 
 // Função para ler o joystick com debounce
@@ -189,10 +216,12 @@ bool verificar_senha(const char *senha)
 void bloquear_sistema()
 {
     exibir_mensagem("BLOQUEADO!");
-    gpio_put(LED_RED, 1); // Acende o LED vermelho
-    sleep_ms(10000);      // Bloqueia por 10 segundos
-    gpio_put(LED_RED, 0); // Apaga o LED vermelho
-    tentativas = 0;       // Reseta o contador de tentativas
+    gpio_put(LED_RED, 1);           // Acende o LED vermelho
+    set_led_matrix_color(0xFF0000); // Exibe vermelho na matriz de LEDs
+    sleep_ms(10000);                // Bloqueia por 10 segundos
+    gpio_put(LED_RED, 0);           // Apaga o LED vermelho
+    set_led_matrix_color(0x000000); // Desliga a matriz de LEDs
+    tentativas = 0;                 // Reseta o contador de tentativas
 }
 
 // Função para tocar uma nota musical no buzzer
@@ -296,6 +325,11 @@ int main()
     gpio_init(BUZZER_PIN);
     gpio_set_dir(BUZZER_PIN, GPIO_OUT);
 
+    // Inicialização da matriz de LEDs WS2812
+    PIO pio = pio0;
+    uint offset = pio_add_program(pio, &ws2812_program);
+    ws2812_program_init(pio, 0, offset, LED_PIN, 800000, false);
+
     // Exibe o teclado no display
     desenhar_teclado();
 
@@ -330,24 +364,29 @@ int main()
             // Verifica se a senha foi completamente digitada
             if (indice_senha == 4)
             {
+                // Quando a senha estiver correta
                 if (verificar_senha(senha_digitada))
                 {
                     exibir_mensagem("COFRE ABERTO!");
-                    gpio_put(LED_GREEN, 1);  // Acende o LED verde
-                    tocar_melodia_sucesso(); // Toca a melodia de sucesso
+                    gpio_put(LED_GREEN, 1);         // Acende o LED verde
+                    set_led_matrix_color(0x00FF00); // Exibe verde na matriz de LEDs (corrigido)
+                    tocar_melodia_sucesso();        // Toca a melodia de sucesso
                     cofre_aberto = true;
-                    sleep_ms(5000);         // Mantém o cofre aberto por 5 segundos
-                    gpio_put(LED_GREEN, 0); // Apaga o LED verde
+                    sleep_ms(5000);                 // Mantém o cofre aberto por 5 segundos
+                    gpio_put(LED_GREEN, 0);         // Apaga o LED verde
+                    set_led_matrix_color(0x000000); // Desliga a matriz de LEDs
                     cofre_aberto = false;
                 }
                 else
                 {
                     tentativas++;
                     exibir_mensagem("SENHA INCORRETA!");
-                    gpio_put(LED_RED, 1); // Acende o LED vermelho
-                    tocar_som_erro();     // Toca o som de erro
-                    sleep_ms(2000);       // Mantém o LED vermelho aceso por 2 segundos
-                    gpio_put(LED_RED, 0); // Apaga o LED vermelho
+                    gpio_put(LED_RED, 1);           // Acende o LED vermelho
+                    set_led_matrix_color(0xFF0000); // Exibe vermelho na matriz de LEDs (corrigido)
+                    tocar_som_erro();               // Toca o som de erro
+                    sleep_ms(2000);                 // Mantém o LED vermelho aceso por 2 segundos
+                    gpio_put(LED_RED, 0);           // Apaga o LED vermelho
+                    set_led_matrix_color(0x000000); // Desliga a matriz de LEDs
 
                     if (tentativas >= TENTATIVAS_MAX)
                     {
