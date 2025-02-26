@@ -56,3 +56,44 @@ uint16_t joystick_y_debounced = 0;
 uint32_t ultima_movimentacao_cursor = 0;
 const uint32_t intervalo_debounce_joystick = 50;
 const uint32_t intervalo_movimentacao_cursor = 200;
+
+// Função para exibir mensagem no display OLED
+void exibir_mensagem(const char *mensagem)
+{
+    ssd1306_fill(&ssd, false);
+    ssd1306_draw_string(&ssd, mensagem, 0, 0);
+    ssd1306_send_data(&ssd);
+}
+
+// Função para desenhar o teclado numérico no display
+void desenhar_teclado()
+{
+    ssd1306_fill(&ssd, false); // Limpa a tela
+
+    // Desenha a borda da tela
+    for (int i = 0; i < border_size; i++)
+    {
+        ssd1306_rect(&ssd, i, i, WIDTH - (2 * i), HEIGHT - (2 * i), true, false);
+    }
+
+    // Desenha os números do teclado
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        for (uint8_t j = 0; j < 3; j++)
+        {
+            uint8_t x = j * 42; // Posição X do número
+            uint8_t y = i * 16; // Posição Y do número
+
+            // Desenha o número
+            ssd1306_draw_char(&ssd, teclado[i][j], x + 10, y + 5);
+
+            // Desenha um retângulo ao redor do número selecionado
+            if (i == cursor_y && j == cursor_x)
+            {
+                ssd1306_rect(&ssd, x, y, 40, 15, true, false);
+            }
+        }
+    }
+
+    ssd1306_send_data(&ssd); // Envia os dados para o display
+}
