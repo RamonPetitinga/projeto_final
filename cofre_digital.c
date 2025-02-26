@@ -24,3 +24,35 @@
 
 #define SENHA_CORRETA "1234"
 #define TENTATIVAS_MAX 3
+
+// Variáveis globais
+ssd1306_t ssd;
+char senha_digitada[5] = "";
+uint8_t tentativas = 0;
+bool cofre_aberto = false;
+int border_size = 2;
+
+// Posição do cursor no teclado numérico
+uint8_t cursor_x = 0;
+uint8_t cursor_y = 0;
+
+// Matriz do teclado numérico (4x3) DISPLAY
+const char teclado[4][3] = {
+    {'1', '2', '3'},
+    {'4', '5', '6'},
+    {'7', '8', '9'},
+    {'*', '0', '#'}};
+
+// Frequências das notas musicais (em Hz)
+#define NOTA_C5 523 // Dó5
+#define NOTA_E5 659 // Mi5
+#define NOTA_G5 784 // Sol5
+#define NOTA_A5 880 // Lá5
+
+// Variáveis para debounce
+uint32_t ultima_leitura_joystick = 0;
+uint16_t joystick_x_debounced = 0;
+uint16_t joystick_y_debounced = 0;
+uint32_t ultima_movimentacao_cursor = 0;
+const uint32_t intervalo_debounce_joystick = 50;
+const uint32_t intervalo_movimentacao_cursor = 200;
