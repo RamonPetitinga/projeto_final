@@ -178,3 +178,78 @@ void mover_cursor()
         desenhar_teclado();
     }
 }
+
+// Função para verificar a senha
+bool verificar_senha(const char *senha)
+{
+    return strcmp(senha, SENHA_CORRETA) == 0;
+}
+
+// Função para bloquear o sistema após tentativas falhas
+void bloquear_sistema()
+{
+    exibir_mensagem("BLOQUEADO!");
+    gpio_put(LED_RED, 1); // Acende o LED vermelho
+    sleep_ms(10000);      // Bloqueia por 10 segundos
+    gpio_put(LED_RED, 0); // Apaga o LED vermelho
+    tentativas = 0;       // Reseta o contador de tentativas
+}
+
+// Função para tocar uma nota musical no buzzer
+void tocar_nota(uint32_t frequencia, uint32_t duracao_ms)
+{
+    // Configura o pino do buzzer para PWM
+    gpio_set_function(BUZZER_PIN, GPIO_FUNC_PWM);
+    uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN);
+    uint channel_num = pwm_gpio_to_channel(BUZZER_PIN);
+
+    // Configura a frequência do PWM
+    uint32_t clock = 125000000; // Clock do Raspberry Pi Pico (125 MHz)
+    uint32_t divisor = 16;      // Divisor para reduzir a frequência
+    uint32_t wrap = clock / (divisor * frequencia) - 1;
+
+    pwm_set_clkdiv(slice_num, divisor);
+    pwm_set_wrap(slice_num, wrap);
+    pwm_set_chan_level(slice_num, channel_num, wrap / 2); // 50% de duty cycle
+    pwm_set_enabled(slice_num, true);
+
+    // Mantém a nota tocando pelo tempo especificado
+    sleep_ms(duracao_ms);
+
+    // Desliga o PWM
+    pwm_set_enabled(slice_num, false);
+}
+
+// Função para tocar uma melodia de sucesso (senha correta)
+void tocar_melodia_sucesso()
+{
+    tocar_nota(NOTA_C5, 200); // Dó5
+    sleep_ms(50);
+    tocar_nota(NOTA_E5, 200); // Mi5
+    sleep_ms(50);
+    tocar_nota(NOTA_G5, 200); // Sol5
+    sleep_ms(50);
+    tocar_nota(NOTA_A5, 400); // Lá5
+}
+
+// Função para tocar um som de erro (senha incorreta)
+void tocar_som_erro()
+{
+    tocar_nota(NOTA_C5, 200); // Dó5
+    sleep_ms(50);
+    tocar_nota(NOTA_C5, 200); // Dó5
+}
+
+// Função para debounce do botão
+bool debounce(uint pin)
+{
+    if (!gpio_get(pin)) // Verifica se o botão está pressionado
+    {
+        sleep_ms(50);       // Aguarda 50ms para estabilizar o sinal
+        if (!gpio_get(pin)) // Verifica novamente
+        {
+            return true; // Botão pressionado
+        }
+    }
+    return false; // Botão não pressionado
+}
