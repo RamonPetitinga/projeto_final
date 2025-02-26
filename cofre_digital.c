@@ -253,3 +253,123 @@ bool debounce(uint pin)
     }
     return false; // Botão não pressionado
 }
+
+int main()
+{
+    stdio_init_all();
+
+    // Inicialização do I2C e display OLED
+    i2c_init(I2C_PORT, 400 * 1000);
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C_SDA);
+    gpio_pull_up(I2C_SCL);
+
+    ssd1306_init(&ssd, WIDTH, HEIGHT, false, DISPLAY_ADDR, I2C_PORT);
+    ssd1306_config(&ssd);
+    ssd1306_fill(&ssd, false);
+    ssd1306_send_data(&ssd);
+
+    // Inicialização do ADC para o joystick
+    adc_init();
+    adc_gpio_init(JOYSTICK_X_PIN);
+    adc_gpio_init(JOYSTICK_Y_PIN);
+
+    // Inicialização dos GPIOs
+    gpio_init(JOYSTICK_PB);
+    gpio_set_dir(JOYSTICK_PB, GPIO_IN);
+    gpio_pull_up(JOYSTICK_PB);
+
+    gpio_init(LED_GREEN);
+    gpio_set_dir(LED_GREEN, GPIO_OUT);
+    gpio_init(LED_RED);
+    gpio_set_dir(LED_RED, GPIO_OUT);
+
+    gpio_init(BUTTON_A);
+    gpio_set_dir(BUTTON_A, GPIO_IN);
+    gpio_pull_up(BUTTON_A);
+
+    gpio_init(BUTTON_B); // Inicializa o botão B
+    gpio_set_dir(BUTTON_B, GPIO_IN);
+    gpio_pull_up(BUTTON_B);
+
+    gpio_init(BUZZER_PIN);
+    gpio_set_dir(BUZZER_PIN, GPIO_OUT);
+
+    // Exibe o teclado no display
+    desenhar_teclado();
+
+    // Loop principal
+    uint8_t indice_senha = 0;
+    while (true)
+    {
+        // Lê o joystick com debounce
+        ler_joystick_com_debounce();
+
+        // Move o cursor com o joystick
+        mover_cursor();
+
+        // Verifica se o botão A foi pressionado (com debounce)
+        if (debounce(BUTTON_A))
+        {
+            // Adiciona o número selecionado à senha
+            senha_digitada[indice_senha] = teclado[cursor_y][cursor_x];
+            indice_senha++;
+
+            // Exibe a senha digitada no display
+            char mensagem[20];
+            snprintf(mensagem, sizeof(mensagem), "Senha: %s", senha_digitada);
+            exibir_mensagem(mensagem);
+
+            // Aguarda o botão ser solto
+            while (!gpio_get(BUTTON_A))
+            {
+                sleep_ms(10);
+            }
+
+            // Verifica se a senha foi completamente digitada
+            if (indice_senha == 4)
+            {
+                if (verificar_senha(senha_digitada))
+                {
+                    exibir_mensagem("COFRE ABERTO!");
+                    gpio_put(LED_GREEN, 1);  // Acende o LED verde
+                    tocar_melodia_sucesso(); // Toca a melodia de sucesso
+                    cofre_aberto = true;
+                    sleep_ms(5000);         // Mantém o cofre aberto por 5 segundos
+                    gpio_put(LED_GREEN, 0); // Apaga o LED verde
+                    cofre_aberto = false;
+                }
+                else
+                {
+                    tentativas++;
+                    exibir_mensagem("SENHA INCORRETA!");
+                    gpio_put(LED_RED, 1); // Acende o LED vermelho
+                    tocar_som_erro();     // Toca o som de erro
+                    sleep_ms(2000);       // Mantém o LED vermelho aceso por 2 segundos
+                    gpio_put(LED_RED, 0); // Apaga o LED vermelho
+
+                    if (tentativas >= TENTATIVAS_MAX)
+                    {
+                        bloquear_sistema();
+                    }
+                }
+
+                // Reseta a senha digitada
+                indice_senha = 0;
+                memset(senha_digitada, 0, sizeof(senha_digitada));
+                desenhar_teclado();
+            }
+        }
+
+        // Verifica se o botão B foi pressionado (com debounce)
+        if (debounce(BUTTON_B))
+        {
+            exibir_mensagem("Entrando no modo USB...");
+            sleep_ms(1000);       // Aguarda um pouco para exibir a mensagem
+            reset_usb_boot(0, 0); // Entra no modo de bootloader USB
+        }
+
+        sleep_ms(10); // Pequeno atraso para evitar leituras rápidas demais
+    }
+}
