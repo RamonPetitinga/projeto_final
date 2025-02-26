@@ -138,7 +138,7 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
   uint16_t index = 0;
   if (c >= 'A' && c <= 'Z')
   {
-    index = (c - 'A' + 11) * 8; // Letras maiúsculas (A-Z)
+    index = (c - 'A' + 11) * 8; // Letras maiúsculas (A-Z).
   }
   else if (c >= 'a' && c <= 'z')
   {
