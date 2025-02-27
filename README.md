@@ -22,7 +22,7 @@ Modo de boot USB acionado por um botão dedicado.
 
 # Componentes Utilizados
 
-Microcontrolador: Raspberry Pi Pico
+Microcontrolador: Raspberry Pi Pico W
 
 Display: OLED SSD1306 via I2C
 
@@ -38,7 +38,7 @@ Botões: Botão A para confirmação, Botão B para entrar no modo USB
 
 # Configuração de Hardware
 
-Os seguintes pinos do Raspberry Pi Pico são utilizados:
+Os seguintes pinos do Raspberry Pi Pico W são utilizados:
 
 Componente
 
