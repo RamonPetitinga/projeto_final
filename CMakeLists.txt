@@ -28,24 +28,24 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(cofre_digital C CXX ASM)
+project(controle_de_acesso C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(cofre_digital cofre_digital.c lib/ssd1306.c)
+add_executable(controle_de_acesso controle_de_acesso.c lib/ssd1306.c)
 
-pico_set_program_name(cofre_digital "cofre_digital")
-pico_set_program_version(cofre_digital "0.1")
+pico_set_program_name(controle_de_acesso "controle_de_acesso")
+pico_set_program_version(controle_de_acesso "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(cofre_digital 1)
-pico_enable_stdio_usb(cofre_digital 1)
+pico_enable_stdio_uart(controle_de_acesso 1)
+pico_enable_stdio_usb(controle_de_acesso 1)
 
 # Add the standard library to the build
-target_link_libraries(cofre_digital
+target_link_libraries(controle_de_acesso
         hardware_i2c
         hardware_adc
         hardware_pwm
@@ -53,14 +53,14 @@ target_link_libraries(cofre_digital
         pico_stdlib)
 
 # Add the standard include files to the build
-target_include_directories(cofre_digital PRIVATE
+target_include_directories(controle_de_acesso PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(cofre_digital 
+target_link_libraries(controle_de_acesso 
         
         )
 
-pico_add_extra_outputs(cofre_digital)
+pico_add_extra_outputs(controle_de_acesso)
 

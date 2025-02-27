@@ -1,4 +1,4 @@
 [wokwi]
 version = 1
-firmware = 'build/cofre_digital.uf2'
-elf = 'build/cofre_digital.elf'
+firmware = 'build/controle_de_acesso.uf2'
+elf = 'build/controle_de_acesso.elf'

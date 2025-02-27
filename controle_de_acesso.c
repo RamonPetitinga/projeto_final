@@ -8,7 +8,7 @@
 #include "hardware/clocks.h"
 #include "lib/ssd1306.h"
 #include "pico/bootrom.h"
-#include "lib/ws2812.pio.h" // Arquivo gerado pelo PIO
+#include "lib/ws2812.pio.h" 
 
 #define I2C_PORT i2c1
 #define I2C_SDA 14
