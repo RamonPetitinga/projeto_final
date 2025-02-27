@@ -1,12 +1,12 @@
-**Sistema de Controle de Acesso com Joystick e Display SSD1306**
+# Sistema de Controle de Acesso com Joystick e Display SSD1306
 
 Link vídeo:https://youtu.be/oRs8hdRdmHI
 
-**Descrição**
+# Descrição
 
 Este projeto implementa um sistema de controle de acesso baseado em senha, utilizando um joystick analógico para navegação e seleção de dígitos, um display OLED SSD1306 para exibição do teclado e feedback ao usuário, e uma matriz de LEDs WS2812 para indicação visual do status do sistema. O sistema também conta com um buzzer para fornecer feedback sonoro em caso de sucesso ou erro.
 
-**Funcionalidades**
+# Funcionalidades
 
 Entrada de senha usando um joystick analógico.
 
@@ -20,7 +20,7 @@ Bloqueio do sistema após três tentativas falhas.
 
 Modo de boot USB acionado por um botão dedicado.
 
-**Componentes Utilizados**
+# Componentes Utilizados
 
 Microcontrolador: Raspberry Pi Pico
 
@@ -36,7 +36,7 @@ LEDs Indicadores: LED verde e LED vermelho
 
 Botões: Botão A para confirmação, Botão B para entrar no modo USB
 
-**Configuração de Hardware**
+# Configuração de Hardware
 
 Os seguintes pinos do Raspberry Pi Pico são utilizados:
 
@@ -55,7 +55,7 @@ LED Vermelho 13
 Buzzer 10
 Matriz WS2812 7
 
-**Dependências**
+# Dependências
 
 Este projeto depende das seguintes bibliotecas:
 
@@ -73,7 +73,7 @@ lib/ssd1306.h - Biblioteca para o display OLED
 
 lib/ws2812.pio.h - Biblioteca para controle dos LEDs WS2812
 
-**Como Funciona**
+# Como Funciona
 
 Inicialização: Configuração dos periféricos, incluindo ADC, I2C e GPIOs.
 
@@ -91,7 +91,7 @@ Se três tentativas falharem: O sistema é bloqueado por 10 segundos.
 
 Modo USB: Se o botão B for pressionado, o sistema entra no modo boot USB para atualização do firmware.
 
-**Como Usar**
+# Como Usar
 
 Ligue o sistema e observe o teclado numérico no display OLED.
 
@@ -105,7 +105,7 @@ Se errar três vezes, o sistema se bloqueará temporariamente.
 
 Para entrar no modo USB, pressione o botão B.
 
-**Como Compilar e Executar**
+# Como Compilar e Executar
 
 1️⃣ Clonar o repositório
 
