@@ -53,7 +53,7 @@ Botão B 6 \
 LED Verde 11 \
 LED Vermelho 13 \
 Buzzer 10 \
-Matriz WS2812 7 \
+Matriz WS2812 7
 
 # Dependências
 
