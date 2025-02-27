@@ -61,7 +61,7 @@ Este projeto depende das seguintes bibliotecas:
 
 hardware/adc.h - Para leitura do joystick
 
-hardware/i2c.h - Para comunicação com o display OLED
+hardware/i2c.h - Para comunicação com o display ssd1306
 
 hardware/pwm.h - Para controle do buzzer
 
@@ -69,7 +69,7 @@ hardware/pio.h - Para controle da matriz de LEDs WS2812
 
 hardware/clocks.h - Para manipulação de temporização
 
-lib/ssd1306.h - Biblioteca para o display OLED
+lib/ssd1306.h - Biblioteca para o display ssd1306
 
 lib/ws2812.pio.h - Biblioteca para controle dos LEDs WS2812
 
@@ -77,7 +77,7 @@ lib/ws2812.pio.h - Biblioteca para controle dos LEDs WS2812
 
 Inicialização: Configuração dos periféricos, incluindo ADC, I2C e GPIOs.
 
-Exibição do teclado: O teclado numérico é desenhado no display OLED.
+Exibição do teclado: O teclado numérico é desenhado no display ssd1306.
 
 Entrada de senha: O usuário move o cursor com o joystick e pressiona o botão A para selecionar números.
 
@@ -93,7 +93,7 @@ Modo USB: Se o botão B for pressionado, o sistema entra no modo boot USB para a
 
 # Como Usar
 
-Ligue o sistema e observe o teclado numérico no display OLED.
+Ligue o sistema e observe o teclado numérico no display ssd1306.
 
 Use o joystick para mover o cursor sobre os números.
 
