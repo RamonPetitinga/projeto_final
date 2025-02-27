@@ -8,7 +8,7 @@
 #include "hardware/clocks.h"
 #include "lib/ssd1306.h"
 #include "pico/bootrom.h"
-#include "lib/ws2812.pio.h" 
+#include "lib/ws2812.pio.h"
 
 #define I2C_PORT i2c1
 #define I2C_SDA 14
@@ -367,7 +367,7 @@ int main()
                 // Quando a senha estiver correta
                 if (verificar_senha(senha_digitada))
                 {
-                    exibir_mensagem("COFRE ABERTO!");
+                    exibir_mensagem("ACESSO LIBERADO!");
                     gpio_put(LED_GREEN, 1);         // Acende o LED verde
                     set_led_matrix_color(0x00FF00); // Exibe verde na matriz de LEDs (corrigido)
                     tocar_melodia_sucesso();        // Toca a melodia de sucesso
