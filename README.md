@@ -42,18 +42,18 @@ Os seguintes pinos do Raspberry Pi Pico W são utilizados:
 
 Componente
 
-Pino GPIO
-I2C SDA 14
-I2C SCL 15
-Joystick X 27
-Joystick Y 26
-Joystick PB 22
-Botão A 5
-Botão B 6
-LED Verde 11
-LED Vermelho 13
-Buzzer 10
-Matriz WS2812 7
+Pino GPIO /n
+I2C SDA 14 /n
+I2C SCL 15 /n
+Joystick X 27 /n
+Joystick Y 26 /n
+Joystick PB 22 /n
+Botão A 5 /n
+Botão B 6 /n
+LED Verde 11 /n
+LED Vermelho 13 /n
+Buzzer 10 /n
+Matriz WS2812 7 /n
 
 # Dependências
 
